@@ -27,7 +27,7 @@ const microGain=t=>1-.985*clip((t-microIn+.10)/.12)*clip((microOut+.09-t)/.1);
 let air=0, room=0;
 for(let i=0;i<frames;i++){
   const t=i/rate, raw=random();
-  air=.85*air+.15*raw; room=.993*room+.007*raw;
+  air=.974*air+.026*raw; room=.998*room+.002*raw;
   let bed=0, bass=0;
   for(let j=0;j<chords.length;j++){
     const a=starts[j]/30-1.15,b=starts[j+1]/30+1.18;
@@ -46,9 +46,9 @@ for(let i=0;i<frames;i++){
   const rain=Math.max(envelope(t,-2,11),.57*envelope(t,57,68),.49*envelope(t,85,91));
   const hall=envelope(t,19,28), stress=envelope(t,32,80);
   const fade=clip(t/.25)*clip((90-t)/.65)*microGain(t);
-  music[i]=(bed+bass)*fade;
-  ambience[i]=(air*(.023+rain*.16)+room*(.18+stress*.75)+
-    hall*.012*Math.sin(tau*46*t)+stress*.009*Math.sin(tau*(76.3*t+.035*Math.sin(t))))*fade;
+  music[i]=(bed+bass*.58)*fade;
+  ambience[i]=(air*rain*.062+room*(hall*.085+stress*.18)+
+    hall*.007*Math.sin(tau*46*t)+stress*.005*Math.sin(tau*(76.3*t+.035*Math.sin(t))))*fade;
 }
 const cues=[];
 function effect(frame,name,length,fn){
@@ -65,28 +65,48 @@ function tone(frame,label,from,to,length=.17,gain=.12){
 function wash(frame,label,length,gain,grain=.1){
   let filtered=0;
   effect(frame,label,length,t=>{
-    filtered=(1-grain)*filtered+grain*random();
+    const smoothing=grain*.23;
+    filtered=(1-smoothing)*filtered+smoothing*random();
     const e=Math.sin(Math.PI*t/length)**2;
-    return gain*e*(filtered+.23*Math.sin(tau*(91*t-17*t*t)));
+    return gain*e*(filtered*.43+.19*Math.sin(tau*(102*t-22*t*t)));
+  });
+}
+// The filtered air rises into the cut, then falls quickly while its low body trails off.
+function whoosh(cutFrame, label, {lead=8, tail=11, gain=.15, low=130, high=1750}={}) {
+  const length=(lead+tail)/30;
+  const cut=lead/30;
+  let upper=0, lower=0;
+  effect(cutFrame-lead,label,length,t=>{
+    const rise=clip(t/cut);
+    const decay=clip((t-cut)/(length-cut));
+    const envelope=t<cut ? Math.sin(Math.PI*rise/2)**2 : (1-decay)**3;
+    const noise=random();
+    const upperHz=high*(.30+.70*rise)*(1-.68*decay);
+    const lowerHz=upperHz*.22;
+    upper+=(1-Math.exp(-tau*upperHz/rate))*(noise-upper);
+    lower+=(1-Math.exp(-tau*lowerHz/rate))*(noise-lower);
+    const phase=tau*(low*t+low*.78*t*t/(2*length));
+    const body=Math.sin(phase)*.28+Math.sin(phase*1.47)*.12;
+    return gain*envelope*((upper-lower)*1.30+(1-.55*decay)*body);
   });
 }
 function impact(frame,label,gain=.22,hz=56){
   effect(frame,label,1.08,t=>gain*clip(t/.006)*Math.exp(-t*4.9)*
-    (Math.sin(tau*(hz*t-11*t*t))+.24*Math.sin(tau*(hz*1.87*t-18*t*t))+.16*random()*Math.exp(-t*20)));
+    (Math.sin(tau*(hz*t-11*t*t))+.24*Math.sin(tau*(hz*1.87*t-18*t*t))+.039*random()*Math.exp(-t*24)));
 }
 function step(frame,label,gain=.095){
   effect(frame,label,.26,t=>gain*clip(t/.004)*Math.exp(-t*20)*
-    (Math.sin(tau*(119*t-117*t*t))+.62*random()*Math.exp(-14*t)));
+    (Math.sin(tau*(119*t-117*t*t))+.12*random()*Math.exp(-19*t)));
 }
 for(const f of [12,42,72,102,132,162])tone(f,'Тиканье часов',1250,820,.044,.057);
-wash(167,'Нырок через зрачок',1.28,.34,.19);
+whoosh(184,'Whoosh · нырок через зрачок',{lead:12,tail:12,gain:.20,low:86,high:1610});
 for(let i=0;i<6;i++){
   const start=starts[i+1], ladder=counterLadders[i];
   impact(start,'Начало этапа · '+labels[i],.16+i*.014,63-i*4);
   wash(start+hourReveal,'Появление строки времени',.32,.19,.25);
   for(let n=0;n<=ladder.length;n++)tone(start+counterAt+n*counterStep,'Цифровой счётчик · '+(ladder[n]??labels[i]),570+i*26+n*103,640+i*38+n*113,.075,.077);
 }
-wash(starts[1]+178,'Переход в мозг',1.16,.25);
+whoosh(starts[1]+194,'Whoosh · переход в мозг',{lead:10,tail:11,gain:.15,low:109,high:1890});
 tone(starts[1]+211,'Появление шкалы внимания',875,943,.13,.073);
 for(const [i,f] of concentrationSteps.entries())tone(starts[1]+f,'Снижение концентрации',1150-i*152,770-i*113,.21,.12);
 for(const f of [195,232,273,304])tone(starts[1]+f,'Импульс по нейронной сети',1590,1170,.058,.042);
@@ -99,26 +119,27 @@ tone(starts[2]+292,'Провал на схематичной волне',560,225
 wash(starts[3]+88,'Движение тени',1.77,.23,.17);
 wash(starts[3]+130,'Отдалённый неразборчивый шорох',1.65,.23,.09);
 impact(starts[3]+163,'Вздрагивание',.13,44);
-wash(starts[3]+254,'Переход от глаза к нейронам',.90,.26,.22);
+whoosh(starts[3]+269,'Whoosh · от глаза к нейронам',{lead:11,tail:11,gain:.18,low:102,high:1830});
 tone(starts[3]+290,'Появление подписи о восприятии',626,382,.22,.088);
 step(starts[4]+89,'Вздрагивание у телефона',.12);
 tone(starts[4]+112,'Уведомление на телефоне',1110,1530,.15,.092);
 wash(starts[4]+134,'Буквы расплываются',1.38,.29,.28);
-wash(starts[4]+223,'Погружение в схему памяти',1.12,.23,.09);
+whoosh(starts[4]+224,'Whoosh · переход к схеме памяти',{lead:12,tail:8,gain:.15,low:91,high:1490});
 tone(starts[4]+234,'Появление подписи о памяти',620,530,.17,.083);
 for(const [i,f] of [246,253,260,267,274,281,288,295,302].entries())tone(starts[4]+f,'Фрагменты воспоминаний',1120-52*i,670-38*i,.13,.094-i*.006);
 for(const f of [56,83,110,139])step(starts[5]+f,'Шаг на мокрой улице',.103);
 wash(starts[5]+101,'Сбой восприятия прохожего',.47,.23,.21);
 wash(starts[5]+146,'Уличное эхо',1.28,.29,.13);
-wash(starts[5]+220,'Переход к сетям восприятия',1.18,.28,.19);
+whoosh(starts[5]+234,'Whoosh · переход к сетям восприятия',{lead:12,tail:10,gain:.17,low:108,high:1670});
 tone(starts[5]+258,'Появление подписи об ориентации',510,339,.16,.089);
-wash(starts[6]+108,'Погружение в темноту',1.05,.20);
 for(const f of [142,171,211])impact(starts[6]+f,'Редкий низкий пульс',.13,40);
 step(starts[6]+253,'Персонаж опускается на пол',.19);
 wash(starts[6]+257,'Появление предупреждения о риске травм',.39,.18,.21);
-wash(starts[7]+70,'Переход к спящему персонажу',1.72,.18,.16);
+whoosh(starts[7]+105,'Whoosh · возвращение в спальню',{lead:17,tail:15,gain:.13,low:118,high:1270});
 tone(starts[7]+113,'Появление финального титра',493,409,.27,.078);
 impact(starts[7]+212,'Финальное затемнение',.23,39);
+whoosh(starts[2]+240,'Whoosh · переход к волне микросна',{lead:9,tail:10,gain:.13,low:119,high:1600});
+whoosh(starts[6]+121,'Whoosh · уход в темноту',{lead:10,tail:12,gain:.14,low:78,high:1270});
 mkdirSync(new URL('../public/audio/',import.meta.url),{recursive:true});
 wav('music',music);wav('ambience',ambience);wav('effects',effects);
 function timecode(f) {
