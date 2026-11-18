@@ -1,0 +1,55 @@
+name: Final Render
+on:
+  workflow_dispatch:
+    inputs:
+      concurrency:
+        description: 'Concurrent rendering processes'
+        default: '4'
+        type: choice
+        options: ['2', '4', '6']
+      frames:
+        description: 'Optional diagnostic range, for example 600-989'
+        default: ''
+        type: string
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      RENDER_CONCURRENCY: ${{ inputs.concurrency || '4' }}
+      FRAME_RANGE: ${{ inputs.frames || '' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run audio -- --table
+      - run: npm run check-assets
+      - name: Render with Remotion
+        shell: bash
+        run: |
+          if [[ -z "$FRAME_RANGE" ]]; then
+            npm run render -- --concurrency="$RENDER_CONCURRENCY" --crf=19
+          elif [[ "$FRAME_RANGE" =~ ^[0-9]+-[0-9]+$ ]]; then
+            npm run render -- --concurrency="$RENDER_CONCURRENCY" --crf=19 --frames="$FRAME_RANGE"
+          else
+            echo "Use an inclusive frame range in start-end form." >&2
+            exit 1
+          fi
+      - name: Verify full film
+        if: inputs.frames == ''
+        run: node scripts/verify.mjs final
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stopsleep-final
+          path: |
+            out/final.mp4
+            docs/narration.md
+            docs/sfx-cues.md
+            docs/scientific-notes.md
+          if-no-files-found: error

@@ -1,0 +1,37 @@
+name: Preview
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run audio -- --table
+      - run: npm run check-assets
+      - run: npm run storyboard
+      - uses: actions/upload-artifact@v4
+        with:
+          name: storyboard
+          path: out/storyboard.jpg
+          if-no-files-found: error
+      - run: npm run preview -- --concurrency=4 --crf=23
+      - run: node scripts/verify.mjs preview
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stopsleep-preview
+          path: |
+            out/preview.mp4
+            out/storyboard.jpg
+          if-no-files-found: error
