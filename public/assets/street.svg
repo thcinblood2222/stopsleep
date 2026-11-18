@@ -27,7 +27,7 @@
 <ellipse cx="360" cy="514" rx="265" ry="361" fill="url(#passage-light)">
 </ellipse>
 <g transform="translate(360 0) scale(-1 1)">
-<path d="M0 514L436 82v1465L0 620z" fill="#252b3a" stroke="#8391a5" stroke-opacity=".42" stroke-width="3">
+<path d="M0 514l35-36v-33l49-30v-45l76-44v-51l87-49v-39l82-54v-42l111-75v1370L0 620z" fill="#252b3a" stroke="#8391a5" stroke-opacity=".42" stroke-width="3">
 </path>
 <path d="M0 577l453 368v46L0 594z" fill="#606a7d" opacity=".73">
 </path>
@@ -261,7 +261,7 @@
 </g>
 </g>
 <g transform="translate(360 0) scale(1 1)">
-<path d="M0 514L436 82v1465L0 620z" fill="#252b3a" stroke="#8391a5" stroke-opacity=".42" stroke-width="3">
+<path d="M0 514l35-36v-33l49-30v-45l76-44v-51l87-49v-39l82-54v-42l111-75v1370L0 620z" fill="#252b3a" stroke="#8391a5" stroke-opacity=".42" stroke-width="3">
 </path>
 <path d="M0 577l453 368v46L0 594z" fill="#606a7d" opacity=".73">
 </path>
@@ -516,6 +516,15 @@
 </path>
 <path d="M15.41167305833693 1359.5968380310767q340.79121039134174 -15.188466201285426 687.2780956081655 0" stroke="#9397aa" opacity="0.007193320488118201" stroke-width="2.398558275160678" fill="none">
 </path>
+<g>
+<path d="M91 899V366q0-67 69-67h26m-93 593-10 9h32m74-602q22-7 34 8l-5 7h-35z" fill="none" stroke="#101c2c" stroke-width="7">
+</path>
+<path d="M93 871V372q0-64 65-68m30 7h31" stroke="#a4acb6" stroke-width="2" opacity=".67" fill="none">
+</path>
+<ellipse cx="201" cy="310" rx="106" ry="82" fill="url(#passage-light)">
+</ellipse>
+<path d="M25 1028q142-65 218-17l-34 38-123 32-67-2zM422 951q156-61 300-30l30 56-137 15z" fill="url(#street-reflect)" opacity=".68">
+</path>
 <g opacity="0.46">
 <path d="M217.20020355395835 400.749963804388l-7.092408591212006 25.80032792143902" stroke="#b0c8d4" stroke-width="1.590016396071951" stroke-linecap="round" opacity="0.47031349399469036">
 </path>
@@ -665,6 +674,7 @@
 </path>
 <path d="M688.1603414876062 650.0322444469026l-6.7823509147856385 24.792640473053325" stroke="#b0c8d4" stroke-width="1.5396320236526662" stroke-linecap="round" opacity="0.4524851776001742">
 </path>
+</g>
 </g>
 </g>
 </svg>

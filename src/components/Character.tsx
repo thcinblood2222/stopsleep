@@ -66,7 +66,7 @@ export function CharacterRig({f,x,y,scale=1,fatigue=.2,fear=0,look=0,warm=.4,wal
       <linearGradient id="ss-sleeve" x2="90%" y2="70%"><stop stopColor={warm>.5?'#788f89':'#65818e'}/><stop offset=".58" stopColor="#41586d"/><stop offset="1" stopColor="#29354b"/></linearGradient>
       <linearGradient id="ss-fabric" x2="86%" y2="99%"><stop stopColor={warm>.5?'#83958b':'#718793'}/><stop offset=".41" stopColor="#435e72"/><stop offset="1" stopColor="#233348"/></linearGradient>
     </defs>
-    {[-1,1].map(side=><g key={side} transform={`translate(${side*43} 207) rotate(${side*(gait*19+3)+sit*side*42+fall*side*45})`}>
+    {[-1,1].map(side=><g key={side} transform={`translate(${side*43} 207) rotate(${side*(gait*19+3)-sit*side*30+fall*side*45})`}>
       <path d="M-30-14q29-18 62-2l-4 112-9 46-43-1-8-57z" fill="#344055" stroke="#202a3d" strokeWidth="3"/>
       <path d="M-20 4q8 55 3 101m39-37l-40 12m0 42q21 5 39-2" stroke="#73808f" fill="none" opacity=".56" strokeWidth="2"/>
       <g transform={`translate(0 132) rotate(${side*(-gait*9+sit*14)})`}>

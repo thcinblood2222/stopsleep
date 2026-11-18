@@ -98,7 +98,7 @@ export function Corridor({f,stress=.3,street=false}:{f:number;stress?:number;str
     <rect x="-150" y="-150" width="1020" height="1580" fill="url(#passage)"/>
     <ellipse cx="360" cy={y} rx="265" ry="361" fill="url(#passage-light)"/>
     {[-1,1].map(side=><g key={side} transform={`translate(360 0) scale(${side} 1)`}>
-      <path d={`M0 ${y}L436 ${street?82:-160}v1465L0 620z`} fill={street?'#252b3a':'#303b50'} stroke="#8391a5" strokeOpacity=".42" strokeWidth="3"/>
+      <path d={street?`M0 ${y}l35-36v-33l49-30v-45l76-44v-51l87-49v-39l82-54v-42l111-75v1370L0 620z`:`M0 ${y}L436 -160v1465L0 620z`} fill={street?'#252b3a':'#303b50'} stroke="#8391a5" strokeOpacity=".42" strokeWidth="3"/>
       <path d={`M0 ${y+63}l453 368v46L0 ${y+80}z`} fill="#606a7d" opacity=".73"/>
       {Array.from({length:6},(_,i)=>{
         const u=Math.pow(fract((i+push)/6),1.8);
@@ -129,7 +129,13 @@ export function Corridor({f,stress=.3,street=false}:{f:number;stress?:number;str
       const t=fract((i+push)/5), d=t*t;
       return <g key={i} opacity={(1-t)*.84}><ellipse cx="360" cy={y-d*475} rx={29+d*188} ry={25+d*112} fill="url(#passage-light)"/><path d={`M${357-d*100} ${y-d*475}h${6+d*206}`} stroke="#cae5e5" strokeWidth={1+d*5} opacity=".83"/></g>;
     })}
-    {street&&<Rain f={f} subtle/>}
+    {street&&<g>
+      <path d="M91 899V366q0-67 69-67h26m-93 593-10 9h32m74-602q22-7 34 8l-5 7h-35z" fill="none" stroke="#101c2c" strokeWidth="7"/>
+      <path d="M93 871V372q0-64 65-68m30 7h31" stroke="#a4acb6" strokeWidth="2" opacity=".67" fill="none"/>
+      <ellipse cx="201" cy="310" rx="106" ry="82" fill="url(#passage-light)"/>
+      <path d="M25 1028q142-65 218-17l-34 38-123 32-67-2zM422 951q156-61 300-30l30 56-137 15z" fill="url(#street-reflect)" opacity=".68"/>
+      <Rain f={f} subtle/>
+    </g>}
   </g>;
 }
 export function PhoneDetail({f,distortion}:{f:number;distortion:number}) {

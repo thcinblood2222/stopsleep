@@ -12,6 +12,8 @@ export function Day7() {
     <g opacity={1-z}>
       <g opacity={1-blackout*.94}><Bedroom f={f} warm={.06} window={false}/></g>
       <g transform={`translate(364 ${mix(823,865,blackout)}) scale(${mix(3.09,3.85,blackout)})`}>
+        <path d="M-28 31q-38 4-74 40l-16 53h247l-11-43q-37-41-89-50z" fill="#354355" stroke="#49465a" strokeWidth="2"/>
+        <path d="M-29 33q18 37 50 25l13-22m-124 62q41-19 66-17m88 2q25 3 49 22" fill="none" stroke="#8a8294" strokeWidth="2.2" opacity=".37"/>
         <FacialExpressions f={f} fatigue={.94} warm={.05} close={.86*pulse(f,50,71,96)} look={-.18+Math.sin(f/24)*.21} tag="day7-face"/>
       </g>
       <Iris f={f} from={105} to={136} cx={259} cy={661} tag="day7">

@@ -1,5 +1,5 @@
 import {useCurrentFrame} from 'remotion';
-import {CharacterRig, FacialExpressions,pulse} from '../components/Character';
+import {CharacterRig,pulse} from '../components/Character';
 import {Bed,Bedroom} from '../components/ParallaxBackground';
 import {ParallaxCamera,Reveal,Stage,mix,smooth} from '../components/Motion';
 import {BrainView,Iris} from './shared';
@@ -19,9 +19,9 @@ export function Intro() {
     </ParallaxCamera>
     <g opacity={push}>
       <Bedroom f={f} warm={.66} window={false}/>
-      <g transform={`translate(${mix(380,413,push)} ${mix(793,836,push)}) scale(${mix(2,4.35,smooth(f,104,170))}) rotate(-8)`}>
-        <FacialExpressions f={f} fatigue={.19} fear={smooth(f,138,158)*.32} warm={.79} look={-.29} close={close} tag="intro-close"/>
-      </g>
+      <CharacterRig f={f} x={mix(380,413,push)} y={mix(793,836,push)}
+        scale={mix(2,4.35,smooth(f,104,170))} fatigue={.19} fear={smooth(f,138,158)*.32}
+        warm={.79} look={-.29} close={close} tag="intro-close"/>
     </g>
     <rect width="720" height="1280" fill="url(#vignette)"/>
     <Reveal at={27} until={132}><g transform="translate(54 956)">
