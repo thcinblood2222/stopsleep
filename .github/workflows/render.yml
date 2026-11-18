@@ -1,5 +1,7 @@
 name: Final Render
 on:
+  push:
+    branches: [first-final-render]
   workflow_dispatch:
     inputs:
       concurrency:
@@ -42,7 +44,7 @@ jobs:
             exit 1
           fi
       - name: Verify full film
-        if: inputs.frames == ''
+        if: github.event_name == 'push' || inputs.frames == ''
         run: node scripts/verify.mjs final
       - uses: actions/upload-artifact@v4
         with:
