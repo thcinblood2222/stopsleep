@@ -59,17 +59,17 @@ function Arm({a,e,flip=false}: {a:number;e:number;flip?:boolean}) {
 export function CharacterRig({f,x,y,scale=1,fatigue=.2,fear=0,look=0,warm=.4,walk=0,seated=false,close=0,yawn=0,rub=0,phone=false,fall=0,lying=false,tag='hero'}:{
   f:number;x:number;y:number;scale?:number;fatigue?:number;fear?:number;look?:number;warm?:number;walk?:number;seated?:boolean;close?:number;yawn?:number;rub?:number;phone?:boolean;fall?:number;lying?:boolean;tag?:string;
 }) {
-  const gait=Math.sin(f/(9+7*fatigue))*walk, breath=Math.sin(f/14)*(1+fatigue), lean=3*fatigue+Math.sin(f/31)*1.6+fall*13;
-  const phoneLift=phone?1:0;
+  const gait=Math.sin(f/(9+7*fatigue))*walk, breath=Math.sin(f/14)*(1+fatigue), lean=3*fatigue+Math.sin(f/31)*1.6+fall*39;
+  const phoneLift=phone?1:0, sit=Number(seated);
   return <g transform={`translate(${x} ${y+breath+Math.abs(gait)*6+fall*131}) scale(${scale}) rotate(${lying?-81:lean})`}>
     <defs>
       <linearGradient id="ss-sleeve" x2="90%" y2="70%"><stop stopColor={warm>.5?'#788f89':'#65818e'}/><stop offset=".58" stopColor="#41586d"/><stop offset="1" stopColor="#29354b"/></linearGradient>
       <linearGradient id="ss-fabric" x2="86%" y2="99%"><stop stopColor={warm>.5?'#83958b':'#718793'}/><stop offset=".41" stopColor="#435e72"/><stop offset="1" stopColor="#233348"/></linearGradient>
     </defs>
-    {[-1,1].map(side=><g key={side} transform={`translate(${side*43} 207) rotate(${side*(gait*19+3)+seated*side*42+fall*side*20})`}>
+    {[-1,1].map(side=><g key={side} transform={`translate(${side*43} 207) rotate(${side*(gait*19+3)+sit*side*42+fall*side*45})`}>
       <path d="M-30-14q29-18 62-2l-4 112-9 46-43-1-8-57z" fill="#344055" stroke="#202a3d" strokeWidth="3"/>
       <path d="M-20 4q8 55 3 101m39-37l-40 12m0 42q21 5 39-2" stroke="#73808f" fill="none" opacity=".56" strokeWidth="2"/>
-      <g transform={`translate(0 132) rotate(${side*(-gait*9+seated*14)})`}>
+      <g transform={`translate(0 132) rotate(${side*(-gait*9+sit*14)})`}>
         <path d="M-23 0q23 8 44-1l8 10 25 15 1 12q-48 7-79-1z" fill="#6f697b" stroke="#22283d" strokeWidth="2.5"/>
         <path d="M-26 29q40 6 81 0v9q-43 9-81 0z" fill="#b6a7ad"/><path d="M14 12l18-2m-12 9l17-4" stroke="#d4c5c7" strokeWidth="1.9"/>
       </g>
@@ -80,8 +80,8 @@ export function CharacterRig({f,x,y,scale=1,fatigue=.2,fear=0,look=0,warm=.4,wal
     <g transform={`translate(0 ${3+fatigue*13}) rotate(${look*10+Math.sin(f/25)*1.65+fall*11})`}>
       <FacialExpressions f={f} fatigue={fatigue} fear={fear} close={close} look={look} yawn={yawn} warm={warm} tag={tag}/>
     </g>
-    <g transform="translate(-71 53)"><Arm a={11-gait*18+rub*128+fall*15} e={-11-rub*89-seated*30}/></g>
-    <g transform="translate(73 51)"><Arm a={-8+gait*18+phoneLift*32-fall*49} e={10+phoneLift*103+seated*21} flip/></g>
+    <g transform="translate(-71 53)"><Arm a={11-gait*18+rub*128+fall*15} e={-11-rub*89-sit*30}/></g>
+    <g transform="translate(73 51)"><Arm a={-8+gait*18+phoneLift*32-fall*49} e={10+phoneLift*103+sit*21} flip/></g>
     {phone&&<g transform="translate(77 95) rotate(13)"><rect x="-15" y="-42" width="29" height="49" rx="5" fill="#1a263b" stroke="#aabbbf" strokeWidth="2"/><path d="M-10-32h20v32h-20z" fill="#779d9b"/><path d="M-5-26h10m-10 8h7" stroke="#e7dacb" strokeWidth="2"/></g>}
   </g>;
 }
